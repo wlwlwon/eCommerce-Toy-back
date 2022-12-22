@@ -1,7 +1,9 @@
 package com.ecommerce.ecommerce.domain.member;
 
-import jakarta.persistence.*;
+
 import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
 @Getter @Setter
