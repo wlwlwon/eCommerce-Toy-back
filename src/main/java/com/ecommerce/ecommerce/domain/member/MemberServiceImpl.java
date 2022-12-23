@@ -26,6 +26,7 @@ public class MemberServiceImpl implements MemberService{
         Member member = modelMapper.map(memberRequestDTO, Member.class);
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         member.setEmail(member.getEmail());
+        member.setAuthority(Role.Commerce_USER);
 
         return modelMapper.map(memberRepository.save(member), MemberResponseDTO.class);
     }

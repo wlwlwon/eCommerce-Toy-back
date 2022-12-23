@@ -1,6 +1,7 @@
 package com.ecommerce.ecommerce.domain.member;
 
 
+import com.ecommerce.ecommerce.config.authentication.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/signUp")
     public ResponseEntity<MemberResponseDTO> signUp(@RequestBody MemberRequestDTO memberRequestDTO) {
@@ -26,5 +28,13 @@ public class MemberController {
         MemberResponseDTO memberResponseDTO = memberService.signUp(memberRequestDTO);
         return new ResponseEntity<>(memberResponseDTO, HttpStatus.CREATED);
     }
+
+    @PostMapping("/signIn")
+    public ResponseEntity<MemberResponseDTO> signIn(@RequestBody MemberRequestDTO memberRequestDTO) {
+        MemberResponseDTO memberResponseDTO = authenticationService.signInAndReturnJWT(memberRequestDTO);
+        return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
+    }
+
+
 
 }
