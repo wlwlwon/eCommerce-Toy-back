@@ -1,10 +1,13 @@
 package com.ecommerce.ecommerce.domain.member;
 
 
+import com.ecommerce.ecommerce.config.UserPrincipal;
 import com.ecommerce.ecommerce.config.authentication.AuthenticationService;
+import com.ecommerce.ecommerce.domain.member.friend.FriendRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +38,11 @@ public class MemberController {
         return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
     }
 
+    @PostMapping("/addFriend")
+    public ResponseEntity<MemberResponseDTO> addFriend(@AuthenticationPrincipal UserPrincipal member, @RequestBody FriendRequestDTO friendRequestDTO) throws Exception{
+        MemberResponseDTO memberResponseDTO = memberService.addFriend(member.getUsername(),friendRequestDTO);
+        return new ResponseEntity<>(memberResponseDTO,HttpStatus.OK);
+    }
 
 
 }
