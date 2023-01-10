@@ -1,9 +1,12 @@
 package com.ecommerce.ecommerce.domain.member;
 
 
+import com.ecommerce.ecommerce.domain.member.friend.Friend;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -32,5 +35,8 @@ public class Member {
 
     @Column(length = 1000)
     private String refreshToken;
+
+    @OneToMany(mappedBy = "member")
+    private Set<Friend> friendSet = new HashSet<>();
 
 }
