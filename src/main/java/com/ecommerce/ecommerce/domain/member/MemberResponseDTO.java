@@ -12,6 +12,8 @@ public class MemberResponseDTO {
 
     private String nickname;
 
+    private Role authority;
+
     private String accessToken;
 
     private String refreshToken;

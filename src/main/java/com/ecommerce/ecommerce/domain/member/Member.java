@@ -23,6 +23,10 @@ public class Member {
     @Column(nullable = false, length = 50)
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role authority;
+
     @Transient
     private String accessToken;
 

@@ -64,7 +64,7 @@ public class JwtProviderImpl implements JwtProvider {
         return Jwts.builder()
                 .setSubject(member.getEmail())
                 .claim("userName", member.getNickname())
-//                .claim("roles", member.getAuthority())
+                .claim("roles", member.getAuthority())
                 .claim("userEmail", member.getEmail())
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_Access_EXPIRATION_IN_MS))
                 .signWith(key, SignatureAlgorithm.HS512)
