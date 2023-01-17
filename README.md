@@ -18,8 +18,8 @@ Git Flow를 사용하여 브랜치를 관리합니다.모든 브랜치는 Pull R
 - Bitbucket Gitflow Workflow([https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow))
 
 
-🔹 Rule/Convention
+### 🔹 Rule/Convention
 
-Git commit message convention
-Code convention
-PR Rules
+- Git commit message convention
+- Code convention
+- PR Rules
