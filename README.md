@@ -23,4 +23,4 @@ Git Flow를 사용하여 브랜치를 관리합니다.모든 브랜치는 Pull R
 - Git commit message convention
 - Code convention
 - PR Rules
-- ▶️ Rule/Convention 보러가기
+- ▶️ Rule/Convention 보러가기(https://github.com/wlwlwon/eCommerce-Toy-back/wiki/Rule-&-Convention)
