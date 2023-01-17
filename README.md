@@ -16,3 +16,9 @@ Git Flow를 사용하여 브랜치를 관리합니다.모든 브랜치는 Pull R
 **브랜치 관리 전략 참고 문헌**
 - 우아한 형제들 기술 블로그([http://woowabros.github.io/experience/2017/10/30/baemin-mobile-git-branch-strategy.html](http://woowabros.github.io/experience/2017/10/30/baemin-mobile-git-branch-strategy.html))
 - Bitbucket Gitflow Workflow([https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow))
+
+
+🔹 Rule/Convention
+Git commit message convention
+Code convention
+PR Rules
