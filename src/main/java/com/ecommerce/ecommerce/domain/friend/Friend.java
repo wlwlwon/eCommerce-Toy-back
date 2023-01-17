@@ -1,4 +1,4 @@
-package com.ecommerce.ecommerce.domain.member.friend;
+package com.ecommerce.ecommerce.domain.friend;
 
 import com.ecommerce.ecommerce.domain.member.Member;
 import com.ecommerce.ecommerce.domain.member.Role;

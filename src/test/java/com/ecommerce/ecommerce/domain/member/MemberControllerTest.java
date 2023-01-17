@@ -55,6 +55,22 @@ class MemberControllerTest {
         assertNotNull(member.get());
 
     }
+    @Test
+    @DisplayName("회원가입 처리 -중복 email")
+    @Transactional
+    void signUpSubmit_with_conflict_input() throws Exception {
+
+        MemberRequestDTO requestDTO = new MemberRequestDTO();
+        requestDTO.setEmail("jiwon@email.com");
+        requestDTO.setNickname("jiwon");
+        requestDTO.setPassword("12345678");
+
+        mockMvc.perform(post("/member/signUp")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(requestDTO)))
+                .andExpect(status().isConflict());
+
+    }
     private <T> String toJson(T data) throws JsonProcessingException {
         return objectMapper.writeValueAsString(data);
     }

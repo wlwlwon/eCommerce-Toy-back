@@ -3,7 +3,7 @@ package com.ecommerce.ecommerce.domain.member;
 
 import com.ecommerce.ecommerce.config.UserPrincipal;
 import com.ecommerce.ecommerce.config.authentication.AuthenticationService;
-import com.ecommerce.ecommerce.domain.member.friend.FriendRequestDTO;
+import com.ecommerce.ecommerce.domain.friend.FriendRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +37,5 @@ public class MemberController {
         MemberResponseDTO memberResponseDTO = authenticationService.signInAndReturnJWT(memberRequestDTO);
         return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
     }
-
-    @PostMapping("/addFriend")
-    public ResponseEntity<MemberResponseDTO> addFriend(@AuthenticationPrincipal UserPrincipal member, @RequestBody FriendRequestDTO friendRequestDTO) throws Exception{
-        MemberResponseDTO memberResponseDTO = memberService.addFriend(member.getUsername(),friendRequestDTO);
-        return new ResponseEntity<>(memberResponseDTO,HttpStatus.OK);
-    }
-
 
 }
