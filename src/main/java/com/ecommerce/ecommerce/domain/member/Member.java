@@ -1,7 +1,8 @@
 package com.ecommerce.ecommerce.domain.member;
 
 
-import com.ecommerce.ecommerce.domain.member.friend.Friend;
+import com.ecommerce.ecommerce.domain.cart.domain.Cart;
+import com.ecommerce.ecommerce.domain.friend.Friend;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,6 +31,9 @@ public class Member {
     @Column(nullable = false)
     private Role authority;
 
+    @OneToOne
+    private Cart cart;
+
     @Transient
     private String accessToken;
 
@@ -38,5 +42,6 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private Set<Friend> friendSet = new HashSet<>();
+
 
 }

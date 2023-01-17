@@ -1,12 +1,11 @@
 package com.ecommerce.ecommerce.domain.member;
 
-import com.ecommerce.ecommerce.domain.member.friend.Friend;
-import com.ecommerce.ecommerce.domain.member.friend.FriendRequestDTO;
+import com.ecommerce.ecommerce.domain.friend.Friend;
+import com.ecommerce.ecommerce.domain.friend.FriendRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,6 +21,7 @@ public class MemberServiceImpl implements MemberService{
     public boolean isDuplicatedEmail(String email) {
         return memberRepository.existsByEmail(email);
     }
+
     @Override
     public MemberResponseDTO signUp(MemberRequestDTO memberRequestDTO)  {
 
@@ -34,20 +34,10 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public MemberResponseDTO addFriend(String currentMember, FriendRequestDTO friendRequestDTO) throws Exception{
-        Optional<Member> byEmail = memberRepository.findByEmail(currentMember);
-
-        if(byEmail.isEmpty()){
-            throw new Exception("멤버가 존재하지 않습니다.");
-        }
-        Member member = byEmail.get();
-
-        Friend friend = modelMapper.map(friendRequestDTO, Friend.class);
-
-        member.getFriendSet().add(friend);
-        memberRepository.save(member);
-        MemberResponseDTO memberResponseDTO = modelMapper.map(member, MemberResponseDTO.class);
-        return memberResponseDTO;
+    public Member getMember(String userName){
+        return memberRepository.findByEmail(userName).get();
     }
+
+
 
 }
