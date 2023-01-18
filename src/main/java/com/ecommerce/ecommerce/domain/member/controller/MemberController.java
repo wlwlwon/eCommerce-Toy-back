@@ -23,7 +23,6 @@ public class MemberController {
 
     @PostMapping("/signUp")
     public ResponseEntity<MemberResponseDTO> signUp(@RequestBody MemberRequestDTO memberRequestDTO) {
-
         boolean isDuplicated = memberService.isDuplicatedEmail(memberRequestDTO.getEmail());
         if (isDuplicated)
             return new ResponseEntity<>(HttpStatus.CONFLICT);

@@ -27,11 +27,15 @@ public class MemberServiceImpl implements MemberService{
     public MemberResponseDTO signUp(MemberRequestDTO memberRequestDTO)  {
 
         Member member = modelMapper.map(memberRequestDTO, Member.class);
+        memberInfo(member);
+
+        return modelMapper.map(memberRepository.save(member), MemberResponseDTO.class);
+    }
+
+    private void memberInfo(Member member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         member.setEmail(member.getEmail());
         member.setAuthority(Role.Commerce_USER);
-
-        return modelMapper.map(memberRepository.save(member), MemberResponseDTO.class);
     }
 
     @Override
