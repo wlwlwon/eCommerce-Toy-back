@@ -1,14 +1,11 @@
 package com.ecommerce.ecommerce.domain.cart.domain;
 
-import com.ecommerce.ecommerce.domain.member.Member;
-import com.ecommerce.ecommerce.domain.product.domain.Product;
-import com.ecommerce.ecommerce.domain.stuff.Stuff;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
+import com.ecommerce.ecommerce.domain.stuff.domain.Stuff;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Getter @Setter
@@ -26,7 +23,7 @@ public class Cart {
     private int productNum;
 
     @OneToMany(mappedBy = "cart")
-    private List<Stuff> stuffs;
+    private List<Stuff> stuff;
 
     @OneToOne
     private Member member;
