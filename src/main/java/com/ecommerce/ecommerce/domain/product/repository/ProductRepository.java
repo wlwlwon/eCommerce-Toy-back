@@ -2,6 +2,7 @@ package com.ecommerce.ecommerce.domain.product.repository;
 
 import com.ecommerce.ecommerce.domain.product.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +13,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
-
-    List<Product> findByNameLike(String keyword);
+    Optional<List<Product>> findByNameLike(@Param("name") String name);
 
     Optional<Product> findById(long id);
 

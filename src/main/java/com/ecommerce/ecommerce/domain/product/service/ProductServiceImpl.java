@@ -1,15 +1,19 @@
 package com.ecommerce.ecommerce.domain.product.service;
 
+import com.ecommerce.ecommerce.domain.member.domain.Member;
 import com.ecommerce.ecommerce.domain.product.domain.Product;
+import com.ecommerce.ecommerce.domain.product.dto.ProductCreateDTO;
 import com.ecommerce.ecommerce.domain.product.repository.ProductRepository;
 import com.ecommerce.ecommerce.domain.product.constant.DeliveryTypeEnum;
 import com.ecommerce.ecommerce.domain.product.dto.ProductsRequest;
 import com.ecommerce.ecommerce.domain.product.dto.ProductResponse;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,22 +21,21 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
 
     public List<ProductResponse> getProducts(ProductsRequest dto){
-        DeliveryTypeEnum deliveryType = dto.getDeliveryType();
-
+        DeliveryTypeEnum deliveryType = dto.getDeliveryTypeEnum();
         boolean isRocket = dto.isRocket();
-        int listSize = dto.getListSize();
-        int startId = dto.getStart();
 
-        List<Product> products = getProductsSortByDeliveryType(deliveryType, isRocket, listSize, startId);
+
+        List<Product> products = getProductsSortByDeliveryType(deliveryType, isRocket);
 
         return products.stream()
                 .map(ProductResponse::toResponse)
                 .collect(Collectors.toList());
     }
 
-    private List<Product> getProductsSortByDeliveryType (DeliveryTypeEnum deliveryType, boolean isRocket, int listSize, int startId) {
+    private List<Product> getProductsSortByDeliveryType (DeliveryTypeEnum deliveryType, boolean isRocket) {
         List<Product> products = new ArrayList<>();
 
         //pageable 적용
@@ -57,9 +60,17 @@ public class ProductServiceImpl implements ProductService{
         }
         return products;
     }
-    public List<ProductResponse> searchProductsByKeyword(String keyword) {
-        List<Product> products = productRepository.findByNameLike(keyword);
-        return ProductResponse.toList(products);
+    public List<ProductResponse> searchProductsByName(String name) throws Exception{
+        Optional<List<Product>> products = productRepository.findByNameLike(name);
+        if(products.isEmpty())
+            throw new Exception("empty.");
+        return ProductResponse.toList(products.get());
+    }
+
+    @Override
+    public ProductResponse createProduct(Member member, ProductCreateDTO dto) {
+        Product product = modelMapper.map(dto, Product.class);
+        return ProductResponse.toResponse(productRepository.save(product));
     }
 
     public Product getProduct(long id){
@@ -68,6 +79,4 @@ public class ProductServiceImpl implements ProductService{
     public boolean checkIsProductExist(long id){
         return productRepository.findById(id).isPresent();
     }
-
-
 }

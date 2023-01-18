@@ -15,6 +15,10 @@ public class MemberResponseDTO {
 
     private Role authority;
 
+    private String name;
+
+    private String phoneNumber;
+
     private String accessToken;
 
     private String refreshToken;
