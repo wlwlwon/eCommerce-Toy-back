@@ -1,24 +1,26 @@
-package com.ecommerce.ecommerce.domain.cart.domain;
+package com.ecommerce.ecommerce.domain.address.domain;
 
 import com.ecommerce.ecommerce.domain.member.domain.Member;
-import com.ecommerce.ecommerce.domain.stuff.domain.Stuff;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter @Setter
 @Builder @AllArgsConstructor @NoArgsConstructor
-public class Cart {
+public class Address {
 
     @Id
     @GeneratedValue
     private long id;
 
-    @OneToMany(mappedBy = "cart")
-    private List<Stuff> stuff;
+    private boolean isMain;
+
+    private String name;
+
+    private String content;
 
     @OneToOne
     private Member member;
+
 }
