@@ -3,7 +3,7 @@ package com.ecommerce.ecommerce.config.jwt;
 import com.ecommerce.ecommerce.config.UserPrincipal;
 
 import com.ecommerce.ecommerce.config.utils.SecurityUtils;
-import com.ecommerce.ecommerce.domain.member.Member;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;

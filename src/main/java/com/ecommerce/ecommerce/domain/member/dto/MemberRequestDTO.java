@@ -1,14 +1,15 @@
-package com.ecommerce.ecommerce.domain.member;
+package com.ecommerce.ecommerce.domain.member.dto;
 
+import com.ecommerce.ecommerce.domain.member.Role;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class MemberResponseDTO {
-
-    private Long id;
+public class MemberRequestDTO {
 
     private String email;
+
+    private String password;
 
     private String nickname;
 
@@ -17,5 +18,4 @@ public class MemberResponseDTO {
     private String accessToken;
 
     private String refreshToken;
-
 }

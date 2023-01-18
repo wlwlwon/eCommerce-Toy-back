@@ -1,6 +1,6 @@
 package com.ecommerce.ecommerce.domain.friend;
 
-import com.ecommerce.ecommerce.domain.member.MemberResponseDTO;
+import com.ecommerce.ecommerce.domain.member.dto.MemberResponseDTO;
 
 public interface FriendService {
 

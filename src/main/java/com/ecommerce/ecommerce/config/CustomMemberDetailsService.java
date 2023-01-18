@@ -1,8 +1,8 @@
 package com.ecommerce.ecommerce.config;
 
 import com.ecommerce.ecommerce.config.utils.SecurityUtils;
-import com.ecommerce.ecommerce.domain.member.Member;
-import com.ecommerce.ecommerce.domain.member.MemberRepository;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
+import com.ecommerce.ecommerce.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,6 @@ import java.util.Set;
 public class CustomMemberDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

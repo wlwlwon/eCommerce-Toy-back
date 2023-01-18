@@ -2,7 +2,7 @@ package com.ecommerce.ecommerce.config.jwt;
 
 import com.ecommerce.ecommerce.config.UserPrincipal;
 
-import com.ecommerce.ecommerce.domain.member.Member;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
 import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;

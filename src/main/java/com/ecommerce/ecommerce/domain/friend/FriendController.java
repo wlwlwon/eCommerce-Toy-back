@@ -1,8 +1,7 @@
 package com.ecommerce.ecommerce.domain.friend;
 
 import com.ecommerce.ecommerce.config.UserPrincipal;
-import com.ecommerce.ecommerce.domain.member.MemberResponseDTO;
-import com.ecommerce.ecommerce.domain.member.MemberService;
+import com.ecommerce.ecommerce.domain.member.dto.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,13 +1,14 @@
-package com.ecommerce.ecommerce.domain.member;
+package com.ecommerce.ecommerce.domain.member.service;
 
-import com.ecommerce.ecommerce.domain.friend.Friend;
-import com.ecommerce.ecommerce.domain.friend.FriendRequestDTO;
+import com.ecommerce.ecommerce.domain.member.Role;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
+import com.ecommerce.ecommerce.domain.member.dto.MemberRequestDTO;
+import com.ecommerce.ecommerce.domain.member.dto.MemberResponseDTO;
+import com.ecommerce.ecommerce.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

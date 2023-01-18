@@ -1,8 +1,8 @@
 package com.ecommerce.ecommerce.domain.friend;
 
-import com.ecommerce.ecommerce.domain.member.Member;
-import com.ecommerce.ecommerce.domain.member.MemberRepository;
-import com.ecommerce.ecommerce.domain.member.MemberResponseDTO;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
+import com.ecommerce.ecommerce.domain.member.repository.MemberRepository;
+import com.ecommerce.ecommerce.domain.member.dto.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
