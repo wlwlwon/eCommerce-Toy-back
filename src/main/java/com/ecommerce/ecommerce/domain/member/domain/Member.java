@@ -1,12 +1,17 @@
-package com.ecommerce.ecommerce.domain.member;
+package com.ecommerce.ecommerce.domain.member.domain;
 
 
+import com.ecommerce.ecommerce.domain.address.domain.Address;
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
+import com.ecommerce.ecommerce.domain.coupon.domain.UserCoupon;
 import com.ecommerce.ecommerce.domain.friend.Friend;
+import com.ecommerce.ecommerce.domain.member.Role;
+import com.ecommerce.ecommerce.domain.order.domain.Order;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,6 +32,12 @@ public class Member {
     @Column(nullable = false, length = 50)
     private String nickname;
 
+    @Column(nullable = false, length = 50)
+    private String name;
+
+    @Column(nullable = false, length = 13)
+    private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role authority;
@@ -42,6 +53,15 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private Set<Friend> friendSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<UserCoupon> userCouponList;
+
+    @OneToMany(mappedBy = "member")
+    private List<Order> orderList;
+
+    @OneToOne
+    private Address addressList;
 
 
 }

@@ -1,13 +1,13 @@
-package com.ecommerce.ecommerce.domain.member;
+package com.ecommerce.ecommerce.domain.member.controller;
 
 
-import com.ecommerce.ecommerce.config.UserPrincipal;
 import com.ecommerce.ecommerce.config.authentication.AuthenticationService;
-import com.ecommerce.ecommerce.domain.friend.FriendRequestDTO;
+import com.ecommerce.ecommerce.domain.member.dto.MemberRequestDTO;
+import com.ecommerce.ecommerce.domain.member.dto.MemberResponseDTO;
+import com.ecommerce.ecommerce.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
