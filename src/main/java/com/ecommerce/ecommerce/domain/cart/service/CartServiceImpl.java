@@ -1,19 +1,16 @@
 package com.ecommerce.ecommerce.domain.cart.service;
 
-import com.ecommerce.ecommerce.domain.cart.CartRepository;
+import com.ecommerce.ecommerce.domain.cart.repository.CartRepository;
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
-import com.ecommerce.ecommerce.domain.member.Member;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
 import com.ecommerce.ecommerce.domain.product.domain.Product;
 import com.ecommerce.ecommerce.domain.product.dto.SaveToCartRequest;
 import com.ecommerce.ecommerce.domain.product.service.ProductService;
-import com.ecommerce.ecommerce.domain.stuff.Stuff;
-import com.ecommerce.ecommerce.domain.stuff.StuffRepository;
+import com.ecommerce.ecommerce.domain.stuff.domain.Stuff;
+import com.ecommerce.ecommerce.domain.stuff.repository.StuffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +34,9 @@ public class CartServiceImpl implements CartService{
             stuff = makeStuff(dto, product);
             stuffRepository.save(stuff);
         }else{
-            cartRepository.updateProductNum(stuff.getId(),dto.getProductNum()+stuff.getProductNum());
+            stuff.setProductNum(dto.getProductNum()+stuff.getProductNum());
+            stuffRepository.save(stuff);
+            cartRepository.save(cart);
         }
 
     }
@@ -49,11 +48,4 @@ public class CartServiceImpl implements CartService{
                 .build();
     }
 
-    public boolean checkIsStuffExistInCart(Stuff stuff,Member member){
-        return cartRepository.findByMemberAndStuff(member, stuff).isPresent();
-    }
-
-    public int getSavedStuffNum(Cart cart,Stuff stuff){
-        return cartRepository.getByStuff(stuff).getProductNum();
-    }
 }
