@@ -16,12 +16,6 @@ public class Cart {
     @GeneratedValue
     private long id;
 
-//    @Column
-//    private long productId;
-//
-//    @Column
-//    private int productNum;
-
     @OneToMany(mappedBy = "cart")
     private List<Stuff> stuff;
 
