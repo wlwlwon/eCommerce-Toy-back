@@ -2,10 +2,10 @@ package com.ecommerce.ecommerce.config.authentication;
 
 import com.ecommerce.ecommerce.config.UserPrincipal;
 import com.ecommerce.ecommerce.config.jwt.JwtProvider;
-import com.ecommerce.ecommerce.domain.member.Member;
-import com.ecommerce.ecommerce.domain.member.MemberRepository;
-import com.ecommerce.ecommerce.domain.member.MemberRequestDTO;
-import com.ecommerce.ecommerce.domain.member.MemberResponseDTO;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
+import com.ecommerce.ecommerce.domain.member.repository.MemberRepository;
+import com.ecommerce.ecommerce.domain.member.dto.MemberRequestDTO;
+import com.ecommerce.ecommerce.domain.member.dto.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
