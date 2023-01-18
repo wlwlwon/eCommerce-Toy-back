@@ -14,9 +14,13 @@ public interface CouponService {
 
     boolean checkIsAvailableCoupon(long id);
 
+    boolean checkIsAvailableCoupon(Coupon coupon);
+
     boolean checkIsAlreadyHave(Coupon coupon, Member member);
 
-    long getDiscountPriceByCoupon(long userId, Optional<Long> couponId, List<Cart> cartProducts, long totalProductPrice);
+    long getDiscountPriceByCoupon(Member member, Optional<Coupon> coupon, Cart cartProducts, long totalProductPrice);
 
     void increaseUseCount(Member member, Coupon coupon);
+
+    Optional<Coupon> findCoupon(long id);
 }

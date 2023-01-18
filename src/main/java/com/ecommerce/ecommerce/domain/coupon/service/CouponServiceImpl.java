@@ -22,7 +22,6 @@ public class CouponServiceImpl implements CouponService{
 
     private final CouponRepository couponRepository;
     private final UserCouponRepository userCouponRepository;
-    private final MemberRepository memberRepository;
 
     @Override
     public List<Coupon> getAvailableCoupons(){
@@ -73,6 +72,11 @@ public class CouponServiceImpl implements CouponService{
         ZonedDateTime expirationTime = couponRepository.findCouponById(id).get().getExpirationTime();
         return expirationTime.isAfter(ZonedDateTime.now());
     }
+    @Override
+    public boolean checkIsAvailableCoupon(Coupon coupon){
+        ZonedDateTime expirationTime = coupon.getExpirationTime();
+        return expirationTime.isAfter(ZonedDateTime.now());
+    }
 
     @Override
     public boolean checkIsAlreadyHave(Coupon coupon, Member member) {
@@ -80,19 +84,17 @@ public class CouponServiceImpl implements CouponService{
     }
 
     @Override
-    public long getDiscountPriceByCoupon(long userId, Optional<Long> couponId, List<Cart> cartProducts, long totalProductPrice){
-        if(couponId.isEmpty())
+    public long getDiscountPriceByCoupon(Member member, Optional<Coupon> coupon, Cart cartProducts, long totalProductPrice){
+        if(coupon.isEmpty())
             return 0;
-        Optional<Coupon> coupon = couponRepository.findCouponById(couponId.get());
-        Member member = memberRepository.findById(userId).get();
 
         if(!checkIsAlreadyHave(coupon.get(), member))
             throw new IllegalArgumentException("발급받지 않은 쿠폰입니다.");
-        if(!checkIsAvailableCoupon(couponId.get()))
+        if(!checkIsAvailableCoupon(coupon.get()))
             throw new IllegalArgumentException("기간이 지난 쿠폰입니다.");
 
-        List<Long> productsId = cartProducts.stream()
-                .map(cartProduct -> cartProduct.getProductId())
+        List<Long> productsId = cartProducts.getStuff().stream()
+                .map(cartStuff -> cartStuff.getProduct().getId())
                 .collect(Collectors.toList());
 
         if(!productsId.contains(coupon.get().getProductId()))
@@ -112,5 +114,10 @@ public class CouponServiceImpl implements CouponService{
         Optional<UserCoupon> userCoupon = userCouponRepository.findUserCouponByMemberAndCoupon(member, coupon);
         userCoupon.get().setUseCount(userCoupon.get().getUseCount()+1);
         userCouponRepository.save(userCoupon.get());
+    }
+
+    @Override
+    public Optional<Coupon> findCoupon(long id){
+        return couponRepository.findCouponById(id);
     }
 }
