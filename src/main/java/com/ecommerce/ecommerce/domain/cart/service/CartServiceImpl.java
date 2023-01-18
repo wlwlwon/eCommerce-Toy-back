@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService{
@@ -29,15 +31,20 @@ public class CartServiceImpl implements CartService{
         Cart cart = member.getCart();
         Product product = productService.getProduct(dto.getProductId());
 
+        List<Stuff> stuffList = cart.getStuff();
         Stuff stuff = stuffRepository.findByCartAndProduct(cart, product).get();
+
         if(stuff == null){
             stuff = makeStuff(dto, product);
-            stuffRepository.save(stuff);
         }else{
             stuff.setProductNum(dto.getProductNum()+stuff.getProductNum());
-            stuffRepository.save(stuff);
-            cartRepository.save(cart);
         }
+
+        stuffList.add(stuff);
+        cart.setStuff(stuffList);
+
+        stuffRepository.save(stuff);
+        cartRepository.save(cart);
 
     }
 
