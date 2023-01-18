@@ -42,8 +42,9 @@ public class OrderServiceImpl implements OrderService{
     public void order(Member member, OrderRequestDTO orderRequestDto){
 
         Optional<Cart> cart = cartRepository.findByMember(member);
-        long totalPrice = getTotalProductPrice(cart.get()) + getTotalDeliveryFee(cart.get());
         Optional<Coupon> coupon = couponService.findCoupon(orderRequestDto.getCouponId());
+
+        long totalPrice = getTotalProductPrice(cart.get()) + getTotalDeliveryFee(cart.get());
         if(totalPrice == 0)
             throw new IllegalArgumentException("주문을 요청한 상품이 없습니다.");
 
