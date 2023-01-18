@@ -1,6 +1,6 @@
 package com.ecommerce.ecommerce.config;
 
-import com.ecommerce.ecommerce.domain.member.Member;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
