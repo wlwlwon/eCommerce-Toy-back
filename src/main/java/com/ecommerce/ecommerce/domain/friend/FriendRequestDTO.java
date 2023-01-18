@@ -1,11 +1,9 @@
 package com.ecommerce.ecommerce.domain.friend;
 
-import com.ecommerce.ecommerce.domain.member.Member;
+import com.ecommerce.ecommerce.domain.member.domain.Member;
 import com.ecommerce.ecommerce.domain.member.Role;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 @Getter @Setter
 public class FriendRequestDTO {
