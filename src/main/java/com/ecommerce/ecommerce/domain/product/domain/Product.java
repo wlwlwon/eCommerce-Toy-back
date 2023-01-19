@@ -1,5 +1,6 @@
 package com.ecommerce.ecommerce.domain.product.domain;
 
+import com.ecommerce.ecommerce.domain.BaseTimeEntity;
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
 import lombok.*;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter @Setter
 @Builder @AllArgsConstructor @NoArgsConstructor
-public class Product {
+public class Product extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

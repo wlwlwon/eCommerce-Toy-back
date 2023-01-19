@@ -3,15 +3,16 @@ package com.ecommerce.ecommerce.domain.coupon.service;
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
 import com.ecommerce.ecommerce.domain.coupon.domain.Coupon;
 import com.ecommerce.ecommerce.domain.coupon.domain.UserCoupon;
+import com.ecommerce.ecommerce.domain.coupon.dto.CouponRequestDTO;
 import com.ecommerce.ecommerce.domain.coupon.repository.CouponRepository;
 import com.ecommerce.ecommerce.domain.coupon.repository.UserCouponRepository;
 import com.ecommerce.ecommerce.domain.member.domain.Member;
-import com.ecommerce.ecommerce.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,13 +23,20 @@ public class CouponServiceImpl implements CouponService{
 
     private final CouponRepository couponRepository;
     private final UserCouponRepository userCouponRepository;
+    private final ModelMapper modelMapper;
+
+    @Override
+    public Coupon createCoupon(CouponRequestDTO couponRequestDTO) {
+        Coupon coupon = modelMapper.map(couponRequestDTO, Coupon.class);
+        return couponRepository.save(coupon);
+    }
 
     @Override
     public List<Coupon> getAvailableCoupons(){
         List<Coupon> coupons = couponRepository.findAll();
 
         List<Coupon> availableCoupons = coupons.stream()
-                .filter(coupon -> coupon.getExpirationTime().isAfter(ZonedDateTime.now()))
+                .filter(coupon -> (new Date()).before(coupon.getExpirationTime()))
                 .collect(Collectors.toList());
 
         return availableCoupons;
@@ -69,13 +77,13 @@ public class CouponServiceImpl implements CouponService{
 
     @Override
     public boolean checkIsAvailableCoupon(long id){
-        ZonedDateTime expirationTime = couponRepository.findCouponById(id).get().getExpirationTime();
-        return expirationTime.isAfter(ZonedDateTime.now());
+        Date expirationTime = couponRepository.findCouponById(id).get().getExpirationTime();
+        return (new Date()).before(expirationTime);
     }
     @Override
     public boolean checkIsAvailableCoupon(Coupon coupon){
-        ZonedDateTime expirationTime = coupon.getExpirationTime();
-        return expirationTime.isAfter(ZonedDateTime.now());
+        Date expirationTime = coupon.getExpirationTime();
+        return (new Date()).before(expirationTime);
     }
 
     @Override
@@ -120,4 +128,5 @@ public class CouponServiceImpl implements CouponService{
     public Optional<Coupon> findCoupon(long id){
         return couponRepository.findCouponById(id);
     }
+
 }
