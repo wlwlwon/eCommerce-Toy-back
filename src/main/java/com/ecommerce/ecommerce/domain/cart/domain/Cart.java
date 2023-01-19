@@ -5,6 +5,7 @@ import com.ecommerce.ecommerce.domain.stuff.domain.Stuff;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,8 +17,8 @@ public class Cart {
     @GeneratedValue
     private long id;
 
-    @OneToMany(mappedBy = "cart")
-    private List<Stuff> stuff;
+    @OneToMany
+    private List<Stuff> stuffList;
 
     @OneToOne
     private Member member;
