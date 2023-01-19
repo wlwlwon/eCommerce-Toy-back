@@ -21,7 +21,7 @@ public class MemberController {
     private final MemberService memberService;
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/signUp")
+    @PostMapping("/signup")
     public ResponseEntity<MemberResponseDTO> signUp(@RequestBody MemberRequestDTO memberRequestDTO) {
         boolean isDuplicated = memberService.isDuplicatedEmail(memberRequestDTO.getEmail());
         if (isDuplicated)
@@ -31,7 +31,7 @@ public class MemberController {
         return new ResponseEntity<>(memberResponseDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/signIn")
+    @PostMapping("/signin")
     public ResponseEntity<MemberResponseDTO> signIn(@RequestBody MemberRequestDTO memberRequestDTO) {
         MemberResponseDTO memberResponseDTO = authenticationService.signInAndReturnJWT(memberRequestDTO);
         return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);

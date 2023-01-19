@@ -38,7 +38,7 @@ public class SecurityConfiguration {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/member/signUp","/member/signIn").permitAll()
+                .antMatchers(HttpMethod.POST,"/member/signup","/member/signin").permitAll()
                 .antMatchers(HttpMethod.GET,"/product/search","/product/get").permitAll()
                 .anyRequest().authenticated();
 

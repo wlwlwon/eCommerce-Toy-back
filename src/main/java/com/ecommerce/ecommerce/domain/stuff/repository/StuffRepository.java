@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 @Transactional(readOnly = true)
 public interface StuffRepository extends JpaRepository<Stuff,Long> {
-    Optional<Stuff> findByCartAndProduct(Cart cart, Product product);
+
 }

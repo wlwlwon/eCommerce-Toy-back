@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter @Setter
 public class SaveToCartRequest {
+
     @NotNull
     private long productId;
 

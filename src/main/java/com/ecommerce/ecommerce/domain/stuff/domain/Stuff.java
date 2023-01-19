@@ -8,11 +8,8 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter @Setter
+@Builder @AllArgsConstructor @NoArgsConstructor
 public class Stuff {
 
     @Id
@@ -21,12 +18,12 @@ public class Stuff {
 
     private int productNum;
 
-    @ManyToOne
-    private Cart cart;
-
     @OneToOne
     private Product product;
 
-    @OneToOne
-    private OrderProduct orderProduct;
+//    @ManyToOne
+//    private Cart cart;
+
+//    @OneToOne
+//    private OrderProduct orderProduct;
 }

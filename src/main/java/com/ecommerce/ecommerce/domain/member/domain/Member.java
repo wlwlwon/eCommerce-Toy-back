@@ -7,7 +7,7 @@ import com.ecommerce.ecommerce.domain.cart.domain.Cart;
 import com.ecommerce.ecommerce.domain.coupon.domain.UserCoupon;
 import com.ecommerce.ecommerce.domain.friend.Friend;
 import com.ecommerce.ecommerce.domain.member.Role;
-import com.ecommerce.ecommerce.domain.order.domain.Order;
+import com.ecommerce.ecommerce.domain.order.domain.OrderPurchase;
 import lombok.*;
 
 import javax.persistence.*;
@@ -58,11 +58,11 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<UserCoupon> userCouponList;
 
-    @OneToMany(mappedBy = "member")
-    private List<Order> orderList;
+    @OneToOne
+    private OrderPurchase order;
 
     @OneToOne
-    private Address addressList;
+    private Address address;
 
 
 }

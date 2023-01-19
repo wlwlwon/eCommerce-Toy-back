@@ -1,28 +1,25 @@
 package com.ecommerce.ecommerce.domain.order.domain;
 
+import com.ecommerce.ecommerce.domain.BaseTimeEntity;
 import com.ecommerce.ecommerce.domain.member.domain.Member;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class Order {
+@Getter @Setter
+@Builder @AllArgsConstructor @NoArgsConstructor
+public class OrderPurchase extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
     private long id;
 
-    @ManyToOne
+    @OneToOne
     private Member member;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany
     private List<OrderProduct> orderProductList;
 
     private String consumerName;
@@ -38,8 +35,6 @@ public class Order {
     private String receiverRequest;
 
     private boolean status;
-
-    private ZonedDateTime createdAt;
 
     private long paymentId;
 }

@@ -1,5 +1,6 @@
 package com.ecommerce.ecommerce.domain.payment.domain;
 
+import com.ecommerce.ecommerce.domain.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -10,7 +11,7 @@ import java.time.ZonedDateTime;
 @Entity
 @Getter @Setter
 @Builder @AllArgsConstructor @NoArgsConstructor
-public class Payment {
+public class Payment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
@@ -24,5 +25,4 @@ public class Payment {
 
     private boolean status;
 
-    private ZonedDateTime createdAt;
 }
