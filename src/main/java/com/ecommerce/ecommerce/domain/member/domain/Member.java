@@ -1,6 +1,7 @@
 package com.ecommerce.ecommerce.domain.member.domain;
 
 
+import com.ecommerce.ecommerce.domain.BaseTimeEntity;
 import com.ecommerce.ecommerce.domain.address.domain.Address;
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
 import com.ecommerce.ecommerce.domain.coupon.domain.UserCoupon;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Entity
 @Getter @Setter
 @Builder @AllArgsConstructor @NoArgsConstructor
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
