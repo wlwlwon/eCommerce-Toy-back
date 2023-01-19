@@ -1,13 +1,14 @@
 package com.ecommerce.ecommerce.domain.coupon.domain;
 
 
+import com.ecommerce.ecommerce.domain.product.domain.Product;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,6 +32,6 @@ public class Coupon {
 
     private int maxCouponCount;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private ZonedDateTime expirationTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expirationTime;
 }
