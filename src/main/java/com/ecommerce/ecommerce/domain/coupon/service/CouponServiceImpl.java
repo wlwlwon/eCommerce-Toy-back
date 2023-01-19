@@ -101,7 +101,7 @@ public class CouponServiceImpl implements CouponService{
         if(!checkIsAvailableCoupon(coupon.get()))
             throw new IllegalArgumentException("기간이 지난 쿠폰입니다.");
 
-        List<Long> productsId = cartProducts.getStuff().stream()
+        List<Long> productsId = cartProducts.getStuffList().stream()
                 .map(cartStuff -> cartStuff.getProduct().getId())
                 .collect(Collectors.toList());
 
