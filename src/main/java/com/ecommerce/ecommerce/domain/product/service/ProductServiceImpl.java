@@ -27,7 +27,6 @@ public class ProductServiceImpl implements ProductService{
         DeliveryTypeEnum deliveryType = dto.getDeliveryTypeEnum();
         boolean isRocket = dto.isRocket();
 
-
         List<Product> products = getProductsSortByDeliveryType(deliveryType, isRocket);
 
         return products.stream()
