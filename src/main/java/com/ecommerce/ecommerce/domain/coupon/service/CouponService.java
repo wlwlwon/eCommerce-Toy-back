@@ -2,6 +2,7 @@ package com.ecommerce.ecommerce.domain.coupon.service;
 
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
 import com.ecommerce.ecommerce.domain.coupon.domain.Coupon;
+import com.ecommerce.ecommerce.domain.coupon.dto.CouponRequestDTO;
 import com.ecommerce.ecommerce.domain.member.domain.Member;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface CouponService {
     void increaseUseCount(Member member, Coupon coupon);
 
     Optional<Coupon> findCoupon(long id);
+
+    Coupon createCoupon(CouponRequestDTO couponRequestDTO);
 }
