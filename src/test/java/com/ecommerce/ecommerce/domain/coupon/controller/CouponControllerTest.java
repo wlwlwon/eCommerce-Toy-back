@@ -45,14 +45,12 @@ class CouponControllerTest {
     @Test
     public void saveAvailableCoupons() throws Exception{
         // given
-//        MockHttpSession session = new MockHttpSession();
-//        session.setAttribute(SessionKey.LOGIN_USER_ID, User1.ID);
 
         MemberRequestDTO requestDTO = new MemberRequestDTO();
         requestDTO.setEmail("jiwon@email.com");
         requestDTO.setNickname("jiwon");
         requestDTO.setPassword("12345678");
-        requestDTO.setPhoneNumber("01042303282");
+        requestDTO.setPhoneNumber("01012341234");
         requestDTO.setName("kimjiwon");
 
         mockMvc.perform(post("/users/sign-up")
