@@ -13,4 +13,6 @@ public interface CartService {
 
     void saveProduct(Member loginMember, SaveToCartRequest dto);
 
+    Cart findOrCreateNewCart(Member member);
+
 }
