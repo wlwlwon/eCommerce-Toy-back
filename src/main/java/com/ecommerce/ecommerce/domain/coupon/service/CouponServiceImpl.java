@@ -33,6 +33,7 @@ public class CouponServiceImpl implements CouponService{
 
     @Override
     public List<Coupon> getAvailableCoupons(){
+
         List<Coupon> coupons = couponRepository.findAll();
 
         List<Coupon> availableCoupons = coupons.stream()
@@ -118,10 +119,14 @@ public class CouponServiceImpl implements CouponService{
     }
 
     @Override
-    public void increaseUseCount(Member member, Coupon coupon){
-        Optional<UserCoupon> userCoupon = userCouponRepository.findUserCouponByMemberAndCoupon(member, coupon);
-        userCoupon.get().setUseCount(userCoupon.get().getUseCount()+1);
-        userCouponRepository.save(userCoupon.get());
+    public void increaseUseCount(Member member, Optional<Coupon> coupon){
+        if(coupon.isPresent()){
+            Optional<UserCoupon> userCoupon = userCouponRepository.findUserCouponByMemberAndCoupon(member, coupon.get());
+            if(userCoupon.isPresent()){
+                userCoupon.get().setUseCount(userCoupon.get().getUseCount()+1);
+                userCouponRepository.save(userCoupon.get());
+            }
+        }
     }
 
     @Override

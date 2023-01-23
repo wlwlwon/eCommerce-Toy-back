@@ -20,7 +20,4 @@ public class Address {
 
     private String content;
 
-    @OneToOne
-    private Member member;
-
 }

@@ -17,7 +17,7 @@ public class Cart {
     @GeneratedValue
     private long id;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     private List<Stuff> stuffList;
 
     @OneToOne

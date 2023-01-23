@@ -10,5 +10,4 @@ public interface OrderService {
 
     void order(Member member, OrderRequestDTO orderRequestDto);
 
-    OrderProduct toOrderProductResponse(OrderPurchase order, Stuff stuff);
 }

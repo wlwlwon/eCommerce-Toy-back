@@ -1,28 +1,22 @@
 package com.ecommerce.ecommerce.domain.order.service;
 
-import com.ecommerce.ecommerce.domain.address.repository.AddressRepository;
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
 import com.ecommerce.ecommerce.domain.cart.repository.CartRepository;
+import com.ecommerce.ecommerce.domain.cart.service.CartService;
 import com.ecommerce.ecommerce.domain.coupon.domain.Coupon;
 import com.ecommerce.ecommerce.domain.coupon.service.CouponService;
 import com.ecommerce.ecommerce.domain.member.domain.Member;
 import com.ecommerce.ecommerce.domain.order.domain.OrderPurchase;
-import com.ecommerce.ecommerce.domain.order.domain.OrderProduct;
 import com.ecommerce.ecommerce.domain.order.dto.OrderRequestDTO;
-import com.ecommerce.ecommerce.domain.order.repository.OrderProductRepository;
 import com.ecommerce.ecommerce.domain.order.repository.OrderRepository;
 import com.ecommerce.ecommerce.domain.payment.domain.Payment;
 import com.ecommerce.ecommerce.domain.payment.dto.PaymentDTO;
 import com.ecommerce.ecommerce.domain.payment.service.PaymentService;
-import com.ecommerce.ecommerce.domain.stuff.domain.Stuff;
-import com.ecommerce.ecommerce.domain.stuff.repository.StuffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +26,7 @@ public class OrderServiceImpl implements OrderService{
     private final CouponService couponService;
     private final PaymentService paymentService;
     private final OrderRepository orderRepository;
-    private final AddressRepository addressRepository;
-    private final OrderProductRepository orderProductRepository;
-    private final StuffRepository stuffRepository;
+    private final CartService cartService;
 
     @Transactional
     public void order(Member member, OrderRequestDTO orderRequestDto){
@@ -67,29 +59,11 @@ public class OrderServiceImpl implements OrderService{
                 .build();
 
         long paymentId = paymentService.savePaymentInfo(payment);
-        couponService.increaseUseCount(member,coupon.get());
 
-        OrderPurchase order = saveOrderInfo(member, paymentId, orderRequestDto);
+        couponService.increaseUseCount(member,coupon);
 
-        List<OrderProduct> orderProducts = getOrderProduct(order, cart.get());
-        saveOrderProducts(orderProducts);
-
-        deleteCartProducts(cart.get());
-    }
-
-    public List<OrderProduct> getOrderProduct(OrderPurchase order, Cart cart){
-        return cart.getStuffList().stream()
-                .map((cartStuff) -> toOrderProductResponse(order, cartStuff))
-                .collect(Collectors.toList());
-    }
-
-    public OrderProduct toOrderProductResponse(OrderPurchase order, Stuff stuff){
-        return OrderProduct.builder()
-//                .order(order)
-//                .stuff(stuff)
-                .productId(stuff.getProduct().getId())
-                .productNum(stuff.getProductNum())
-                .build();
+        saveOrderInfo(member, paymentId, orderRequestDto);
+        deleteCartProducts(member, cart.get());
     }
 
     public long getTotalProductPrice(Cart cart){
@@ -100,9 +74,9 @@ public class OrderServiceImpl implements OrderService{
         return cart.getStuffList().stream().mapToLong(cartStuff -> cartStuff.getProduct().getDeliveryFee()).sum();
     }
 
-    public OrderPurchase saveOrderInfo(Member member, long paymentId, OrderRequestDTO dto){
-
-        String receiverAddress = addressRepository.findAddressByMember(member).get().getContent();
+    public void saveOrderInfo(Member member, long paymentId, OrderRequestDTO dto){
+        //주소 검사
+        String receiverAddress = member.getAddress().getContent();
 
         OrderPurchase order = OrderPurchase.builder()
                 .member(member)
@@ -117,17 +91,12 @@ public class OrderServiceImpl implements OrderService{
                 .build();
 
         orderRepository.save(order);
-        return order;
     }
 
-    public void saveOrderProducts(List<OrderProduct> orderProducts){
-        orderProducts.stream()
-                .forEach(orderProduct -> orderProductRepository.save(orderProduct));
-    }
-
-    public void deleteCartProducts(Cart cart){
-        cart.getStuffList().stream()
-                .forEach(stuff -> stuffRepository.delete(stuff));
+    public void deleteCartProducts(Member member,Cart cart){
+        member.setCart(null);
+        cartRepository.delete(cart);
+        cartService.findOrCreateNewCart(member);
     }
 
 }

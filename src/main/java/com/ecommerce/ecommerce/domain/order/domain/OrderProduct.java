@@ -17,13 +17,8 @@ public class OrderProduct {
     @GeneratedValue
     private long id;
 
-//    @ManyToOne
-//    private Order order;
-
-//    @OneToOne
-//    private Stuff stuff;
-
     private long productId;
 
     private int productNum;
+
 }

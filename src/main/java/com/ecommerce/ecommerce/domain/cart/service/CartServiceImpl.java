@@ -75,7 +75,8 @@ public class CartServiceImpl implements CartService{
         return stuffRepository.save(stuff);
     }
 
-    private Cart findOrCreateNewCart(Member member) {
+    @Override
+    public Cart findOrCreateNewCart(Member member) {
         Optional<Cart> optionalCart = cartRepository.findByMember(member);
         Cart cart;
         if(optionalCart.isEmpty()){

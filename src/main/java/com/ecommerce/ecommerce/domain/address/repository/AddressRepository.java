@@ -8,5 +8,5 @@ import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public interface AddressRepository extends JpaRepository<Address,Long> {
-    Optional<Address> findAddressByMember(Member member);
+
 }

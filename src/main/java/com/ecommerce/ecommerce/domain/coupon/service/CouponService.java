@@ -21,7 +21,7 @@ public interface CouponService {
 
     long getDiscountPriceByCoupon(Member member, Optional<Coupon> coupon, Cart cartProducts, long totalProductPrice);
 
-    void increaseUseCount(Member member, Coupon coupon);
+    void increaseUseCount(Member member, Optional<Coupon> coupon);
 
     Optional<Coupon> findCoupon(long id);
 
