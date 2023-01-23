@@ -21,9 +21,4 @@ public class Stuff {
     @OneToOne
     private Product product;
 
-//    @ManyToOne
-//    private Cart cart;
-
-//    @OneToOne
-//    private OrderProduct orderProduct;
 }
