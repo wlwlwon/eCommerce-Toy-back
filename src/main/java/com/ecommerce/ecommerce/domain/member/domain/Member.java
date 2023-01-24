@@ -5,7 +5,6 @@ import com.ecommerce.ecommerce.domain.BaseTimeEntity;
 import com.ecommerce.ecommerce.domain.address.domain.Address;
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
 import com.ecommerce.ecommerce.domain.coupon.domain.UserCoupon;
-import com.ecommerce.ecommerce.domain.friend.Friend;
 import com.ecommerce.ecommerce.domain.member.Role;
 import com.ecommerce.ecommerce.domain.order.domain.OrderPurchase;
 import lombok.*;
@@ -51,9 +50,6 @@ public class Member extends BaseTimeEntity {
 
     @Column(length = 1000)
     private String refreshToken;
-
-    @OneToMany(mappedBy = "member")
-    private Set<Friend> friendSet = new HashSet<>();
 
     @OneToMany(mappedBy = "member")
     private List<UserCoupon> userCouponList;
