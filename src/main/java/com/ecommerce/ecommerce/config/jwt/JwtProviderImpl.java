@@ -2,14 +2,16 @@ package com.ecommerce.ecommerce.config.jwt;
 
 import com.ecommerce.ecommerce.config.UserPrincipal;
 
+import com.ecommerce.ecommerce.config.exception.CustomException;
 import com.ecommerce.ecommerce.config.utils.SecurityUtils;
-import com.ecommerce.ecommerce.domain.member.domain.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -39,54 +41,35 @@ public class JwtProviderImpl implements JwtProvider {
     private Long JWT_Refresh_EXPIRATION_IN_MS;
 
 
-    @Override
-    public String generateAccessToken(UserPrincipal auth) {
+    public String generateAccessOrRefreshToken(UserPrincipal auth, JwtType jwtType) {
+
         String authorities = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+        switch (jwtType){
+            case Access:
+                Key accessKey = Keys.hmacShaKeyFor(JWT_Access_SECRET.getBytes(StandardCharsets.UTF_8));
+                return Jwts.builder()
+                        .setSubject(auth.getEmail())
+                        .claim("userName", auth.getUsername())
+                        .claim("roles", authorities)
+                        .claim("userEmail", auth.getEmail())
+                        .setExpiration(new Date(System.currentTimeMillis() + JWT_Access_EXPIRATION_IN_MS))
+                        .signWith(accessKey, SignatureAlgorithm.HS512)
+                        .compact();
+            case Refresh:
+                Key refreshKey = Keys.hmacShaKeyFor(JWT_Refresh_SECRET.getBytes(StandardCharsets.UTF_8));
+                return Jwts.builder()
+                        .setSubject(auth.getEmail())
+                        .claim("userName", auth.getUsername())
+                        .claim("roles", authorities)
+                        .claim("userEmail", auth.getEmail())
+                        .setExpiration(new Date(System.currentTimeMillis() + JWT_Refresh_EXPIRATION_IN_MS))
+                        .signWith(refreshKey, SignatureAlgorithm.HS512)
+                        .compact();
+        }
 
-        Key key = Keys.hmacShaKeyFor(JWT_Access_SECRET.getBytes(StandardCharsets.UTF_8));
-
-        return Jwts.builder()
-                .setSubject(auth.getEmail())
-                .claim("userName", auth.getUsername())
-                .claim("roles", authorities)
-                .claim("userEmail", auth.getEmail())
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_Access_EXPIRATION_IN_MS))
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
-    }
-
-    @Override
-    public String generateNewAccessToken(Member member) {
-        Key key = Keys.hmacShaKeyFor(JWT_Access_SECRET.getBytes(StandardCharsets.UTF_8));
-
-        return Jwts.builder()
-                .setSubject(member.getEmail())
-                .claim("userName", member.getNickname())
-                .claim("roles", member.getAuthority())
-                .claim("userEmail", member.getEmail())
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_Access_EXPIRATION_IN_MS))
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
-    }
-
-    @Override
-    public String generateRefreshToken(UserPrincipal auth) {
-        String authorities = auth.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
-        Key key = Keys.hmacShaKeyFor(JWT_Refresh_SECRET.getBytes(StandardCharsets.UTF_8));
-
-        return Jwts.builder()
-                .setSubject(auth.getEmail())
-                .claim("userName", auth.getUsername())
-                .claim("roles", authorities)
-                .claim("userEmail", auth.getEmail())
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_Refresh_EXPIRATION_IN_MS))
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
+        throw new CustomException("token이 생성되지 않았습니다.", HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -113,6 +96,52 @@ public class JwtProviderImpl implements JwtProvider {
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
+
+
+    @Override
+    public Authentication getAccessAuthentication(String token) {
+        Claims claims = extractAccessClaims(token);
+
+        String username = claims.getSubject();
+
+        Set<GrantedAuthority> authorities = Arrays.stream(claims.get("roles").toString().split(","))
+                .map(SecurityUtils::convertToAuthority)
+                .collect(Collectors.toSet());
+
+        UserDetails userDetails = UserPrincipal.builder()
+                .username(username)
+                .authorities(authorities)
+                .build();
+
+        if (username == null) {
+            return null;
+        }
+
+        return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+    }
+
+
+    @Override
+    public Authentication getRefreshAuthentication(String token) {
+        Claims claims = extractRefreshClaims(token);
+
+        String username = claims.getSubject();
+        Set<GrantedAuthority> authorities = Arrays.stream(claims.get("roles").toString().split(","))
+                .map(SecurityUtils::convertToAuthority)
+                .collect(Collectors.toSet());
+
+        UserDetails userDetails = UserPrincipal.builder()
+                .username(username)
+                .authorities(authorities)
+                .build();
+
+        if (username == null) {
+            return null;
+        }
+
+        return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+    }
+
 
     @Override
     public boolean isAccessTokenValid(HttpServletRequest request) {
@@ -142,10 +171,68 @@ public class JwtProviderImpl implements JwtProvider {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
+        } catch (AuthenticationException e) {
             e.printStackTrace();
-            throw new InvalidParameterException("유효하지 않은 토큰입니다");
+            throw new CustomException("Invalid access token supplied", HttpStatus.BAD_REQUEST);
         }
     }
 
+    @Override
+    public boolean isAccessTokenValid(String token) {
+        Claims claims = extractAccessClaims(token);
+
+        if (claims.getExpiration().before(new Date())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private Claims extractAccessClaims(String token) {
+        Key key = Keys.hmacShaKeyFor(JWT_Access_SECRET.getBytes(StandardCharsets.UTF_8));
+
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+            throw new CustomException("Invalid access token supplied", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public boolean isRefreshTokenValid(String token) {
+        Claims claims = extractRefreshClaims(token);
+
+        if (claims.getExpiration().before(new Date())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private Claims extractRefreshClaims(String token) {
+        Key key = Keys.hmacShaKeyFor(JWT_Refresh_SECRET.getBytes(StandardCharsets.UTF_8));
+
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+            throw new CustomException("Invalid refresh token supplied", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public Long getExpiration(String token){
+        Key key = Keys.hmacShaKeyFor(JWT_Access_SECRET.getBytes(StandardCharsets.UTF_8));
+        Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration();
+        long now = new Date().getTime();
+        return expiration.getTime() - now;
+    }
 }
