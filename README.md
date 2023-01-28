@@ -33,6 +33,8 @@ eCommerce-Toy-backend
 
 ![Untitled](https://user-images.githubusercontent.com/58178752/215256368-6bdd4e33-bd51-470d-bab1-62fdd15fcf37.png)
 
+[📌위키보러가기](https://github.com/wlwlwon/eCommerce-Toy-back/wiki/Issue)
+
 ### 브랜치 관리 전략
 
 Git Flow를 사용하여 브랜치를 관리합니다.모든 브랜치는 Pull Request에 리뷰를 진행한 후 merge를 진행합니다.
