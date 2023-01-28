@@ -31,7 +31,7 @@ eCommerce-Toy-backend
 
 ## Database ERD
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1d2130e9-78f5-4457-a9a4-7c85d50bd8c8/Untitled.png)
+![Untitled](https://user-images.githubusercontent.com/58178752/215256368-6bdd4e33-bd51-470d-bab1-62fdd15fcf37.png)
 
 ### 브랜치 관리 전략
 
