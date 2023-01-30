@@ -5,15 +5,16 @@ import com.ecommerce.ecommerce.domain.global.common.StatusEnum;
 import com.ecommerce.ecommerce.domain.global.common.SuccessResponse;
 import com.ecommerce.ecommerce.domain.member.domain.Member;
 import com.ecommerce.ecommerce.domain.member.service.MemberService;
+import com.ecommerce.ecommerce.domain.order.domain.OrderPurchase;
+import com.ecommerce.ecommerce.domain.order.dto.OrderPurchaseResponseDTO;
 import com.ecommerce.ecommerce.domain.order.dto.OrderRequestDTO;
 import com.ecommerce.ecommerce.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -22,6 +23,17 @@ public class OrderController {
 
     private final MemberService memberService;
     private final OrderService orderService;
+
+    @GetMapping("/get")
+    public SuccessResponse orderList(@AuthenticationPrincipal UserPrincipal member){
+        Member loginMember = memberService.getMember(member.getUsername());
+        List<OrderPurchaseResponseDTO> orderList = orderService.getOrderList(loginMember);
+        return SuccessResponse.builder()
+                .status(StatusEnum.CREATED)
+                .message("주문 리스트 가져오기")
+                .data(orderList)
+                .build();
+    }
 
     @Transactional
     @PostMapping("/orders")
