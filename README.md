@@ -30,7 +30,8 @@ eCommerce-Toy-backend
 
 ## Database ERD
 
-![Untitled](https://user-images.githubusercontent.com/58178752/215256368-6bdd4e33-bd51-470d-bab1-62fdd15fcf37.png)
+![DatabaseERD](https://user-images.githubusercontent.com/58178752/215395819-bfdba34b-0e04-4d11-9cd7-035f4ad9e0f4.png)
+
 
 [📌위키보러가기](https://github.com/wlwlwon/eCommerce-Toy-back/wiki/Issue)
 
