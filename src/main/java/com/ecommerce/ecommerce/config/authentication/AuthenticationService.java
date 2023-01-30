@@ -10,7 +10,9 @@ import javax.validation.Valid;
 
 public interface AuthenticationService {
 
-    MemberResponseDTO signInAndReturnJWT(MemberRequestDTO signInRequest) throws Exception;
+    MemberResponseDTO signInAndReturnJWT(MemberRequestDTO signInRequest);
+
     ResponseEntity<TokenDto> regenerateToken(@Valid RegenerateTokenDto refreshTokenDto);
+
     ResponseEntity<TokenDto> logout(TokenDto tokenDto);
 }

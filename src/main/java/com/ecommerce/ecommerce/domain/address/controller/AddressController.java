@@ -1,11 +1,9 @@
 package com.ecommerce.ecommerce.domain.address.controller;
 
 import com.ecommerce.ecommerce.config.UserPrincipal;
-import com.ecommerce.ecommerce.domain.address.domain.Address;
 import com.ecommerce.ecommerce.domain.address.dto.AddressRequestDTO;
+import com.ecommerce.ecommerce.domain.address.dto.AddressResponseDTO;
 import com.ecommerce.ecommerce.domain.address.service.AddressService;
-import com.ecommerce.ecommerce.domain.coupon.domain.Coupon;
-import com.ecommerce.ecommerce.domain.coupon.dto.CouponRequestDTO;
 import com.ecommerce.ecommerce.domain.global.common.StatusEnum;
 import com.ecommerce.ecommerce.domain.global.common.SuccessResponse;
 import com.ecommerce.ecommerce.domain.member.domain.Member;
@@ -26,13 +24,12 @@ public class AddressController {
     private final MemberService memberService;
 
     @PostMapping("/add")
-    public SuccessResponse addAddress(@AuthenticationPrincipal UserPrincipal member, @RequestBody AddressRequestDTO addressRequestDTO){
+    public SuccessResponse addAddress(@AuthenticationPrincipal UserPrincipal member, @RequestBody AddressRequestDTO addressRequestDTO) {
         Member loginMember = memberService.getMember(member.getUsername());
-        Address address = addressService.addAddress(loginMember,addressRequestDTO);
-
+        AddressResponseDTO address = addressService.addAddress(loginMember, addressRequestDTO);
         return SuccessResponse.builder()
                 .status(StatusEnum.OK)
-                .message("사용가능한 쿠폰 목록 가져오기 성공")
+                .message("주소 저장 성공")
                 .data(address)
                 .build();
     }

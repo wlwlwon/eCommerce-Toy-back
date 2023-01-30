@@ -24,7 +24,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private JwtProvider jwtProvider;
 
     @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -33,7 +33,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         Authentication authentication = jwtProvider.getAuthentication(request);
         if (authentication != null && jwtProvider.isAccessTokenValid(request)) {
             String isLogout = redisTemplate.opsForValue().get(SecurityUtils.extractAuthTokenFromRequest(request));
-            if(ObjectUtils.isEmpty(isLogout))
+            if (ObjectUtils.isEmpty(isLogout))
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             else
                 throw new CustomException("사용할 수 없는 token입니다.", HttpStatus.BAD_REQUEST);

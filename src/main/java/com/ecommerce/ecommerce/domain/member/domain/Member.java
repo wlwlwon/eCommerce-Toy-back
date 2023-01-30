@@ -1,6 +1,5 @@
 package com.ecommerce.ecommerce.domain.member.domain;
 
-
 import com.ecommerce.ecommerce.domain.BaseTimeEntity;
 import com.ecommerce.ecommerce.domain.address.domain.Address;
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
@@ -10,9 +9,8 @@ import com.ecommerce.ecommerce.domain.order.domain.OrderPurchase;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Entity
 @Getter @Setter
@@ -54,8 +52,8 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<UserCoupon> userCouponList;
 
-    @OneToOne
-    private OrderPurchase order;
+    @OneToMany(mappedBy = "member")
+    private List<OrderPurchase> order;
 
     @OneToOne
     private Address address;
