@@ -6,7 +6,7 @@ import com.ecommerce.ecommerce.config.exception.CustomException;
 import com.ecommerce.ecommerce.config.utils.SecurityUtils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,7 +46,7 @@ public class JwtProviderImpl implements JwtProvider {
         String authorities = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-        switch (jwtType){
+        switch (jwtType) {
             case Access:
                 Key accessKey = Keys.hmacShaKeyFor(JWT_Access_SECRET.getBytes(StandardCharsets.UTF_8));
                 return Jwts.builder()
@@ -81,22 +81,15 @@ public class JwtProviderImpl implements JwtProvider {
 
         String username = claims.getSubject();
 
-        Set<GrantedAuthority> authorities = Arrays.stream(claims.get("roles").toString().split(","))
-                .map(SecurityUtils::convertToAuthority)
-                .collect(Collectors.toSet());
-
-        UserDetails userDetails = UserPrincipal.builder()
-                .username(username)
-                .authorities(authorities)
-                .build();
-
         if (username == null) {
             return null;
         }
 
+        Set<GrantedAuthority> authorities = getRoles(claims);
+        UserDetails userDetails = getUserDetails(username, authorities);
+
         return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
-
 
     @Override
     public Authentication getAccessAuthentication(String token) {
@@ -104,40 +97,29 @@ public class JwtProviderImpl implements JwtProvider {
 
         String username = claims.getSubject();
 
-        Set<GrantedAuthority> authorities = Arrays.stream(claims.get("roles").toString().split(","))
-                .map(SecurityUtils::convertToAuthority)
-                .collect(Collectors.toSet());
-
-        UserDetails userDetails = UserPrincipal.builder()
-                .username(username)
-                .authorities(authorities)
-                .build();
-
         if (username == null) {
             return null;
         }
 
+        Set<GrantedAuthority> authorities = getRoles(claims);
+        UserDetails userDetails = getUserDetails(username, authorities);
+
+
         return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
-
 
     @Override
     public Authentication getRefreshAuthentication(String token) {
         Claims claims = extractRefreshClaims(token);
 
         String username = claims.getSubject();
-        Set<GrantedAuthority> authorities = Arrays.stream(claims.get("roles").toString().split(","))
-                .map(SecurityUtils::convertToAuthority)
-                .collect(Collectors.toSet());
-
-        UserDetails userDetails = UserPrincipal.builder()
-                .username(username)
-                .authorities(authorities)
-                .build();
 
         if (username == null) {
             return null;
         }
+
+        Set<GrantedAuthority> authorities = getRoles(claims);
+        UserDetails userDetails = getUserDetails(username, authorities);
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
@@ -159,6 +141,7 @@ public class JwtProviderImpl implements JwtProvider {
 
     private Claims extractAccessClaims(HttpServletRequest request) {
         String token = SecurityUtils.extractAuthTokenFromRequest(request);
+
         if (token == null) {
             return null;
         }
@@ -229,7 +212,22 @@ public class JwtProviderImpl implements JwtProvider {
         }
     }
 
-    public Long getExpiration(String token){
+    private UserPrincipal getUserDetails(String username, Set<GrantedAuthority> authorities) {
+        return UserPrincipal.builder()
+                .username(username)
+                .authorities(authorities)
+                .build();
+    }
+
+    @NotNull
+    private Set<GrantedAuthority> getRoles(Claims claims) {
+        return Arrays.stream(claims.get("roles").toString().split(","))
+                .map(SecurityUtils::convertToAuthority)
+                .collect(Collectors.toSet());
+    }
+
+
+    public Long getExpiration(String token) {
         Key key = Keys.hmacShaKeyFor(JWT_Access_SECRET.getBytes(StandardCharsets.UTF_8));
         Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration();
         long now = new Date().getTime();
