@@ -2,6 +2,7 @@ package com.ecommerce.ecommerce.domain.order.domain;
 
 import com.ecommerce.ecommerce.domain.BaseTimeEntity;
 import com.ecommerce.ecommerce.domain.member.domain.Member;
+import com.ecommerce.ecommerce.domain.product.domain.Product;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,11 +17,11 @@ public class OrderPurchase extends BaseTimeEntity {
     @GeneratedValue
     private long id;
 
-    @OneToOne
+    @ManyToOne
     private Member member;
 
     @OneToMany
-    private List<OrderProduct> orderProductList;
+    private List<Product> productList;
 
     private String consumerName;
 
