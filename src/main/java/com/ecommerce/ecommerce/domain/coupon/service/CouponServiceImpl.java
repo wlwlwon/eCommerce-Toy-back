@@ -1,14 +1,17 @@
 package com.ecommerce.ecommerce.domain.coupon.service;
 
+import com.ecommerce.ecommerce.config.exception.CustomException;
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
 import com.ecommerce.ecommerce.domain.coupon.domain.Coupon;
 import com.ecommerce.ecommerce.domain.coupon.domain.UserCoupon;
 import com.ecommerce.ecommerce.domain.coupon.dto.CouponRequestDTO;
+import com.ecommerce.ecommerce.domain.coupon.dto.UserCouponResponseDTO;
 import com.ecommerce.ecommerce.domain.coupon.repository.CouponRepository;
 import com.ecommerce.ecommerce.domain.coupon.repository.UserCouponRepository;
 import com.ecommerce.ecommerce.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,48 +35,59 @@ public class CouponServiceImpl implements CouponService{
     }
 
     @Override
-    public List<Coupon> getAvailableCoupons(){
+    public List<UserCouponResponseDTO> getAvailableCoupons(Member member){
+        Optional<List<UserCoupon>> userCoupons = userCouponRepository.findUserCouponByMember(member);
 
-        List<Coupon> coupons = couponRepository.findAll();
+        if(userCoupons.isEmpty())
+            throw new CustomException("userCoupons value is empty", HttpStatus.BAD_REQUEST);
+        List<UserCoupon> userCouponList = userCoupons.get();
 
-        List<Coupon> availableCoupons = coupons.stream()
-                .filter(coupon -> (new Date()).before(coupon.getExpirationTime()))
+        List<UserCoupon> availableCoupons = userCouponList.stream()
+                .filter(userCoupon -> (new Date()).before(userCoupon.getCoupon().getExpirationTime()))
                 .collect(Collectors.toList());
 
-        return availableCoupons;
+        return availableCoupons.stream()
+                .map(userCoupon -> modelMapper.map(userCoupon, UserCouponResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public void saveCoupon(Long id, Member member) {
         if(!checkIsAvailableCoupon(id))
-            throw new IllegalArgumentException("사용할 수 없는 쿠폰입니다.");
+            throw new CustomException("사용할 수 없는 쿠폰입니다.", HttpStatus.BAD_REQUEST);
 
         Optional<Coupon> coupon = couponRepository.findCouponById(id);
+        if(coupon.isEmpty())
+            throw new CustomException("coupon value is empty", HttpStatus.BAD_REQUEST);
+
         int maxCouponCount = coupon.get().getMaxCouponCount();
 
-        int issuedCouponCount = 0;
+        int isUsedCouponCount = 0;
         if(checkIsAlreadyHave(coupon.get(), member)) {
             UserCoupon userCoupon = userCouponRepository.findUserCouponByMemberAndCoupon(member, coupon.get()).get();
-            issuedCouponCount = userCoupon.getIssuedCount();
+            isUsedCouponCount = userCoupon.getIssuedCount();
         }
 
-        if(maxCouponCount == issuedCouponCount)
-            throw new IllegalArgumentException("더 이상 발급이 불가능합니다.");
+        if(maxCouponCount == isUsedCouponCount)
+            throw new CustomException("더 이상 쿠폰 발급이 불가능합니다.", HttpStatus.BAD_REQUEST);
 
         if(!checkIsAlreadyHave(coupon.get(), member)){
-            UserCoupon userCoupon = UserCoupon.builder()
-                    .member(member)
-                    .coupon(coupon.get())
-                    .issuedCount(issuedCouponCount+1)
-                    .build();
+            UserCoupon userCoupon = getUserCoupon(member, coupon, isUsedCouponCount);
             userCouponRepository.save(userCoupon);
-        }
-        else {
+        } else {
             UserCoupon userCoupon = userCouponRepository.findUserCouponByMemberAndCoupon(member, coupon.get()).get();
-            userCoupon.setIssuedCount(issuedCouponCount+1);
+            userCoupon.setIssuedCount(isUsedCouponCount+1);
             userCouponRepository.save(userCoupon);
         }
+    }
+
+    private UserCoupon getUserCoupon(Member member, Optional<Coupon> coupon, int isUsedCouponCount) {
+        return UserCoupon.builder()
+                .member(member)
+                .coupon(coupon.get())
+                .issuedCount(isUsedCouponCount + 1)
+                .build();
     }
 
     @Override

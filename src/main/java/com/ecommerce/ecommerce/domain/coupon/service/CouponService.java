@@ -2,14 +2,16 @@ package com.ecommerce.ecommerce.domain.coupon.service;
 
 import com.ecommerce.ecommerce.domain.cart.domain.Cart;
 import com.ecommerce.ecommerce.domain.coupon.domain.Coupon;
+import com.ecommerce.ecommerce.domain.coupon.domain.UserCoupon;
 import com.ecommerce.ecommerce.domain.coupon.dto.CouponRequestDTO;
+import com.ecommerce.ecommerce.domain.coupon.dto.UserCouponResponseDTO;
 import com.ecommerce.ecommerce.domain.member.domain.Member;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CouponService {
-    List<Coupon> getAvailableCoupons();
+    List<UserCouponResponseDTO> getAvailableCoupons(Member member);
 
     void saveCoupon(Long id, Member member);
 
