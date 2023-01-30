@@ -1,6 +1,5 @@
 package com.ecommerce.ecommerce.domain.address.domain;
 
-import com.ecommerce.ecommerce.domain.member.domain.Member;
 import lombok.*;
 
 import javax.persistence.*;
