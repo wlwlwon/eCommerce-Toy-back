@@ -39,16 +39,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private JwtProvider jwtProvider;
 
     private final MemberRepository memberRepository;
-    private final RedisTemplate<String,String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final ModelMapper modelMapper;
 
     @Value("${app.jwt.Refresh-expiration-in-ms}")
     private Long JWT_Refresh_EXPIRATION_IN_MS;
 
     @Override
-    public MemberResponseDTO signInAndReturnJWT(MemberRequestDTO signInRequest) throws Exception{
+    public MemberResponseDTO signInAndReturnJWT(MemberRequestDTO signInRequest) {
 
-        try{
+        try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword())
             );
@@ -56,7 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
             String Access_jwt = jwtProvider.generateAccessOrRefreshToken(userPrincipal, JwtType.Access);
-            String Refresh_jwt = jwtProvider.generateAccessOrRefreshToken(userPrincipal,JwtType.Refresh);
+            String Refresh_jwt = jwtProvider.generateAccessOrRefreshToken(userPrincipal, JwtType.Refresh);
 
             Member signInUser = userPrincipal.getMember();
             signInUser.setAccessToken(Access_jwt);
@@ -73,7 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             System.out.println("***** accessToken : " + Access_jwt);
 
             return modelMapper.map(signInUser, MemberResponseDTO.class);
-        }catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             throw new CustomException("Invalid credentials supplied", HttpStatus.BAD_REQUEST);
         }
     }
@@ -83,7 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String refresh_token = refreshTokenDto.getRefreshToken();
         try {
             // Refresh Token 검증
-            if(!jwtProvider.isRefreshTokenValid(refresh_token)){
+            if (!jwtProvider.isRefreshTokenValid(refresh_token)) {
                 throw new CustomException("Invalid refresh token supplied", HttpStatus.BAD_REQUEST);
             }
 
@@ -92,18 +92,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             // Redis에서 저장된 Refresh Token 값을 가져온다.
             String redis_refreshToken = redisTemplate.opsForValue().get(authentication.getName());
-            if(!redis_refreshToken.equals(refresh_token)) {
+            if (!redis_refreshToken.equals(refresh_token)) {
                 throw new CustomException("Refresh Token doesn't match.", HttpStatus.BAD_REQUEST);
             }
 
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
             // 토큰 재발행
-            String new_refresh_token = jwtProvider.generateAccessOrRefreshToken(userPrincipal,JwtType.Refresh);
-            TokenDto tokenDto = new TokenDto();
-            tokenDto.setAccessToken(jwtProvider.generateAccessOrRefreshToken(userPrincipal,JwtType.Access));
-            tokenDto.setRefreshToken(new_refresh_token);
+            String new_refresh_token = jwtProvider.generateAccessOrRefreshToken(userPrincipal, JwtType.Refresh);
+            String new_access_token = jwtProvider.generateAccessOrRefreshToken(userPrincipal, JwtType.Access);
 
+            TokenDto tokenDto = getTokenDto(new_refresh_token, new_access_token);
 
             // RefreshToken Redis에 업데이트
             redisTemplate.opsForValue().set(
@@ -120,12 +119,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    private TokenDto getTokenDto(String new_refresh_token, String new_access_token) {
+        return TokenDto.builder()
+                .accessToken(new_access_token)
+                .refreshToken(new_refresh_token)
+                .build();
+    }
+
     @Override
-    public ResponseEntity<TokenDto> logout(TokenDto tokenDto){
+    public ResponseEntity<TokenDto> logout(TokenDto tokenDto) {
 
         String access_token = tokenDto.getAccessToken();
-        try{
-            if(!jwtProvider.isAccessTokenValid(access_token)){
+        try {
+            if (!jwtProvider.isAccessTokenValid(access_token)) {
                 throw new CustomException("Invalid refresh token supplied", HttpStatus.BAD_REQUEST);
             }
 
@@ -133,7 +139,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
             //refresh토큰 존재할 경우 삭제
-            if(redisTemplate.opsForValue().get(userPrincipal.getUsername())!=null){
+            if (redisTemplate.opsForValue().get(userPrincipal.getUsername()) != null) {
                 redisTemplate.delete(userPrincipal.getUsername());
             }
 
@@ -147,7 +153,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
             HttpHeaders httpHeaders = new HttpHeaders();
             return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
-        }catch (AuthenticationException e) {
+        } catch (AuthenticationException e) {
             throw new CustomException("logout fail", HttpStatus.BAD_REQUEST);
         }
     }
